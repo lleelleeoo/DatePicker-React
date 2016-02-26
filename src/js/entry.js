@@ -1,2 +1,11 @@
+var react = require('react'),
+    reactDOM = require('react-dom'),
+
+    datePicker = require('./date-picker/date-picker.js');
+
 require('../css/style.css')
-document.write(content);
+
+reactDOM.render(
+    react.createElement('h1', null, datePicker()),
+    document.querySelector('#date-picker')
+);
