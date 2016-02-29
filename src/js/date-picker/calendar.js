@@ -20,7 +20,7 @@ var CalendarComponent,
             ],
     dayElements = (function  () {
         var result = [],
-            labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', ];
+            labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', ];
 
         for (var day=0; day < labels.length; day++) {
             result.push(react.createElement('td', null, labels[day]));
@@ -57,7 +57,6 @@ function getWeeks (year, month) {
     return result;
 };
 
-
 CalendarComponent = react.createClass({
     getInitialState: function() {
         var curentDate = new Date(),
@@ -88,9 +87,5 @@ CalendarComponent = react.createClass({
         return react.createElement('div', null, [month, calendar]);
     },
 });
-
-
-
-
 
 module.exports = CalendarComponent;
