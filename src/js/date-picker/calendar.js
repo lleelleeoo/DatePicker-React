@@ -57,6 +57,21 @@ function getWeeks (year, month) {
     return result;
 };
 
+
+MonthSelectorComponent = react.createClass({
+    render: function() {
+        var prevMonth = react.createElement('span', {onClick: this.props.prevMonth}, '<'),
+            nextMonth = react.createElement('span', {onClick: this.props.nextMonth}, '>'),
+            prevYear = react.createElement('span', {onClick: this.props.prevYear}, '<'),
+            nextYear = react.createElement('span', {onClick: this.props.nextYear}, '>'),
+            month = react.createElement('span', null, monthLabels[this.props.focusedMonth]),
+            year = react.createElement('span', null, this.props.focusedYear);
+
+        return react.createElement('h3', null, [prevMonth, month, nextMonth, prevYear, year, nextYear])
+    },
+});
+
+
 CalendarComponent = react.createClass({
     getInitialState: function() {
         var curentDate = new Date(),
@@ -78,12 +93,32 @@ CalendarComponent = react.createClass({
     },
 
     render: function() {
-        var month = react.createElement('h3', null, monthLabels[this.state.focusedMonth]),
+        var month = react.createElement(
+            MonthSelectorComponent,
+            {
+                focusedYear: this.state.focusedYear,
+                focusedMonth: this.state.focusedMonth,
+                nextMonth: function(){
+                        this.setState({focusedMonth: (this.state.focusedMonth+1)%12});
+                    }.bind(this),
+                prevMonth: function(){
+                        this.setState({focusedMonth: this.state.focusedMonth-1 || 12});
+                    }.bind(this),
+                nextYear: function(){
+                        this.setState({focusedYear: this.state.focusedYear+1});
+                    }.bind(this),
+                prevYear: function(){
+                        this.setState({focusedYear: this.state.focusedYear-1});
+                    }.bind(this),
+            }),
 
             calendarHead = react.createElement('thead', null, dayElements),
-            calendarBody = react.createElement('tbody', null, this.state.weeks),
-            calendar = react.createElement('table', null, [calendarHead, calendarBody]);
+            calendarBody,
+            calendar;
 
+        this.state.weeks = getWeeks(this.state.focusedYear, this.state.focusedMonth);
+        calendarBody = react.createElement('tbody', null, this.state.weeks);
+        calendar = react.createElement('table', null, [calendarHead, calendarBody]);
         return react.createElement('div', null, [month, calendar]);
     },
 });
