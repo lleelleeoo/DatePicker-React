@@ -1,3 +1,7 @@
-body {
-    background-color: #BEFEBE;
+td.picked {
+    background-color: #BEFEFE;
+}
+
+tbody td {
+    cursor: pointer;
 }

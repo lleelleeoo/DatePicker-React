@@ -28,10 +28,14 @@ var CalendarComponent,
         return react.createElement('tr', null, result);
     })();
 
-function getWeeks (year, month) {
+function getWeeks (year, month, pickedDate) {
     var result = [],
         weeksCount = 6,
-        daysInWeek = 7;
+        daysInWeek = 7,
+        pickedDate = pickedDate || new Date(),
+        pickedYear = pickedDate.getFullYear(),
+        pickedMonth = pickedDate.getMonth(),
+        pickedDay = pickedDate.getDate();
 
     function getDate(day, week) {
         var focusedDate = new Date(year, month),
@@ -43,10 +47,12 @@ function getWeeks (year, month) {
 
     function generateWeek(week) {
         var result = [],
-            date;
+            date,
+            className = '';
         for (var day=0; day<daysInWeek; day++) {
             date = getDate(day, week);
-            result.push(react.createElement('td', null, date || ''));
+            className = (pickedDay==date & pickedMonth==month & pickedYear==year ) ? 'picked' : '';
+            result.push(react.createElement('td', {className: className}, date || ''));
         };
         return react.createElement('tr', null, result);
     };
@@ -94,32 +100,42 @@ CalendarComponent = react.createClass({
 
     render: function() {
         var month = react.createElement(
-            MonthSelectorComponent,
-            {
-                focusedYear: this.state.focusedYear,
-                focusedMonth: this.state.focusedMonth,
-                nextMonth: function(){
-                        this.setState({focusedMonth: (this.state.focusedMonth+1)%12});
-                    }.bind(this),
-                prevMonth: function(){
-                        this.setState({focusedMonth: this.state.focusedMonth-1 || 12});
-                    }.bind(this),
-                nextYear: function(){
-                        this.setState({focusedYear: this.state.focusedYear+1});
-                    }.bind(this),
-                prevYear: function(){
-                        this.setState({focusedYear: this.state.focusedYear-1});
-                    }.bind(this),
-            }),
+                MonthSelectorComponent,
+                {
+                    focusedYear: this.state.focusedYear,
+                    focusedMonth: this.state.focusedMonth,
+                    nextMonth: function(){
+                            this.setState({focusedMonth: (this.state.focusedMonth+1)%12});
+                        }.bind(this),
+                    prevMonth: function(){
+                            this.setState({focusedMonth: this.state.focusedMonth-1 || 12});
+                        }.bind(this),
+                    nextYear: function(){
+                            this.setState({focusedYear: this.state.focusedYear+1});
+                        }.bind(this),
+                    prevYear: function(){
+                            this.setState({focusedYear: this.state.focusedYear-1});
+                        }.bind(this),
+                }),
 
             calendarHead = react.createElement('thead', null, dayElements),
             calendarBody,
             calendar;
 
-        this.state.weeks = getWeeks(this.state.focusedYear, this.state.focusedMonth);
-        calendarBody = react.createElement('tbody', null, this.state.weeks);
+        this.state.weeks = getWeeks(this.state.focusedYear, this.state.focusedMonth, this.state.pickedDate);
+        calendarBody = react.createElement('tbody', {onClick: this.selectDate}, this.state.weeks);
         calendar = react.createElement('table', null, [calendarHead, calendarBody]);
         return react.createElement('div', null, [month, calendar]);
+    },
+
+    selectDate: function(event) {
+        this.setState({
+            pickedDate: new Date(
+                this.state.focusedYear,
+                this.state.focusedMonth,
+                event.target.innerHTML
+            )
+        });
     },
 });
 
