@@ -21,6 +21,7 @@ var react = require('react'),
                         pickedDate: this.state.fromDate,
                         disableBefore: new Date(),
                         disableAfter: this.state.toDate,
+                        key: 'from-picker',
                     }),
                 toDate = react.createElement(
                     CalendarComponent,
@@ -30,15 +31,19 @@ var react = require('react'),
                         }.bind(this),
                         pickedDate: this.state.toDate,
                         disableBefore: this.state.fromDate,
+                        key: 'to-picker',
                     }),
                 calendarWrapper = react.createElement(
                     'div',
-                    {className: 'calendar-wrapper'},
+                    {
+                        className: 'calendar-wrapper',
+                        key: 'calendar-wrapper',
+                    },
                     [fromDate, toDate]
                 ),
                 startDuration = react.createElement(
                     'span',
-                    null,
+                    {key: 'start-duration'},
                     [
                         this.state.fromDate.getDate(), '.',
                         this.state.fromDate.getMonth(), '.',
@@ -47,7 +52,7 @@ var react = require('react'),
                 ),
                 endDuration = react.createElement(
                     'span',
-                    null,
+                    {key: 'end-duration'},
                     [
                         this.state.toDate.getDate(), '.',
                         this.state.toDate.getMonth(), '.',
@@ -56,13 +61,19 @@ var react = require('react'),
                 ),
                 durationWrapper = react.createElement(
                     'div',
-                    {className: 'duration-wrapper'},
-                    [startDuration, '. . .', endDuration]
+                    {
+                        className: 'duration-wrapper',
+                        key: 'duration-wrapper',
+                    },
+                    [startDuration, endDuration]
                 );
 
             return react.createElement(
                 'div',
-                {className: 'date-picker-wrapper'},
+                {
+                    className: 'date-picker-wrapper',
+                    key: 'date-picker-wrapper',
+                },
                 [calendarWrapper, durationWrapper]
             )
         },
