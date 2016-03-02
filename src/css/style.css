@@ -1,7 +1,64 @@
-td.picked {
-    background-color: #BEFEFE;
+@import url(https://fonts.googleapis.com/css?family=Droid+Sans:400,700);
+
+* {
+    padding: 0;
+    margin: 0;
 }
 
-tbody td {
+.calendar-wrapper,
+.duration-wrapper {
+    display:flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.date-picker-wrapper {
+    border: 1px solid #cfcfcf;
+
+    color: #fff;
+    background-color: #39c2d7;
+    border-radius: 15px;
+    padding: 15px;
+
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 15px;
+
+    max-width: 600px;
+}
+
+.date-picker-wrapper td {
+    height: 30px;
+    width: 30px;
+
+    transition: 1s;
+}
+
+.date-picker-wrapper table {
+    border-spacing: 10px;
+    text-align: center;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-around;
+
+    padding: 5px;
+}
+
+.active {
+    border-radius: 5px;
+}
+
+.picked {
+    background-color: #399BD7;
+    border-radius: 50%;
+}
+
+.active:hover {
     cursor: pointer;
+    text-decoration: underline;
+}
+
+.disable {
+    color: #cfcfcf;
 }

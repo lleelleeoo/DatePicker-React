@@ -42,7 +42,8 @@ function getWeeks (year, month, pickedDate) {
             firstDay = focusedDate.getFistDay(),
             result = (day+1)%(daysInWeek+1) - firstDay + week*daysInWeek;
 
-        return ( result > 0 & result <= focusedDate.getDaysInMonth() ) ? result : 0;
+        return ( result>0 & result <= focusedDate.getDaysInMonth() )
+            ? result : 0;
     };
 
     function generateWeek(week) {
@@ -51,8 +52,14 @@ function getWeeks (year, month, pickedDate) {
             className = '';
         for (var day=0; day<daysInWeek; day++) {
             date = getDate(day, week);
-            className = (pickedDay==date & pickedMonth==month & pickedYear==year ) ? 'picked' : '';
-            result.push(react.createElement('td', {className: className}, date || ''));
+            className = '';
+            className += (
+                pickedDay==date & pickedMonth==month & pickedYear==year
+            ) ? 'picked' : '';
+            className += (date) ? ' active' : '';
+            result.push(
+                react.createElement('td', {className: className}, date || '')
+            );
         };
         return react.createElement('tr', null, result);
     };
@@ -66,14 +73,48 @@ function getWeeks (year, month, pickedDate) {
 
 MonthSelectorComponent = react.createClass({
     render: function() {
-        var prevMonth = react.createElement('span', {onClick: this.props.prevMonth}, '<'),
-            nextMonth = react.createElement('span', {onClick: this.props.nextMonth}, '>'),
-            prevYear = react.createElement('span', {onClick: this.props.prevYear}, '<'),
-            nextYear = react.createElement('span', {onClick: this.props.nextYear}, '>'),
-            month = react.createElement('span', null, monthLabels[this.props.focusedMonth]),
-            year = react.createElement('span', null, this.props.focusedYear);
+        var prevMonth = react.createElement(
+                'span',
+                {
+                    onClick: this.props.prevMonth,
+                    className: 'active',
+                },
+                '<'
+            ),
+            nextMonth = react.createElement(
+                'span',
+                {
+                    onClick: this.props.nextMonth,
+                    className: 'active',
+                },
+                '>'
+            ),
+            prevYear = react.createElement(
+                'span',
+                {
+                    onClick: this.props.prevYear,
+                    className: 'active',
+                },
+                '<'
+            ),
+            nextYear = react.createElement(
+                'span',
+                {
+                    onClick: this.props.nextYear,
+                    className: 'active',
+                },
+                '>'
+            ),
+            month = react.createElement(
+                'span', null, monthLabels[this.props.focusedMonth]
+            ),
+            year = react.createElement(
+                'span', null, this.props.focusedYear
+            );
 
-        return react.createElement('h3', null, [prevMonth, month, nextMonth, prevYear, year, nextYear])
+        return react.createElement('h3', {className: 'calendar-header'},
+            [prevMonth, month, nextMonth, prevYear, year, nextYear]
+        )
     },
 });
 
@@ -105,16 +146,25 @@ CalendarComponent = react.createClass({
                     focusedYear: this.state.focusedYear,
                     focusedMonth: this.state.focusedMonth,
                     nextMonth: function(){
-                            this.setState({focusedMonth: (this.state.focusedMonth+1)%12});
+                            this.setState({
+                                focusedMonth: (this.state.focusedMonth+1)%12
+                            });
                         }.bind(this),
                     prevMonth: function(){
-                            this.setState({focusedMonth: this.state.focusedMonth-1 || 12});
+                            this.setState({
+                                focusedMonth: this.state.focusedMonth-1 < 0
+                                    ? 11 : this.state.focusedMonth-1
+                            });
                         }.bind(this),
                     nextYear: function(){
-                            this.setState({focusedYear: this.state.focusedYear+1});
+                            this.setState({
+                                focusedYear: this.state.focusedYear+1
+                            });
                         }.bind(this),
                     prevYear: function(){
-                            this.setState({focusedYear: this.state.focusedYear-1});
+                            this.setState({
+                                focusedYear: this.state.focusedYear-1
+                            });
                         }.bind(this),
                 }),
 
@@ -122,20 +172,35 @@ CalendarComponent = react.createClass({
             calendarBody,
             calendar;
 
-        this.state.weeks = getWeeks(this.state.focusedYear, this.state.focusedMonth, this.state.pickedDate);
-        calendarBody = react.createElement('tbody', {onClick: this.selectDate}, this.state.weeks);
-        calendar = react.createElement('table', null, [calendarHead, calendarBody]);
+        this.state.weeks = getWeeks(
+            this.state.focusedYear,
+            this.state.focusedMonth,
+            this.state.pickedDate
+        );
+        calendarBody = react.createElement(
+            'tbody',
+            {onClick: this.selectDate},
+            this.state.weeks
+        );
+        calendar = react.createElement(
+            'table',
+            null,
+            [calendarHead, calendarBody]
+        );
         return react.createElement('div', null, [month, calendar]);
     },
 
     selectDate: function(event) {
-        this.setState({
-            pickedDate: new Date(
+        pickedDate = new Date(
                 this.state.focusedYear,
                 this.state.focusedMonth,
                 event.target.innerHTML
             )
+        this.setState({
+            pickedDate: pickedDate
         });
+
+        this.props.pickDate(pickedDate)
     },
 });
 
