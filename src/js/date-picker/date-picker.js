@@ -2,9 +2,13 @@ var react = require('react'),
     CalendarComponent = require('./calendar.js'),
     datePickerComponent = react.createClass({
         getInitialState: function() {
+            var fromDate = new Date(),
+                toDate = new Date();
+
+            toDate.setDate(toDate.getDate()+14);
             return {
-                fromDate: new Date(),
-                toDate: new Date(),
+                fromDate: fromDate,
+                toDate: toDate,
             }
         },
         render: function() {
@@ -13,14 +17,19 @@ var react = require('react'),
                     {
                         pickDate: function(date) {
                             this.setState({fromDate: date});
-                        }.bind(this)
+                        }.bind(this),
+                        pickedDate: this.state.fromDate,
+                        disableBefore: new Date(),
+                        disableAfter: this.state.toDate,
                     }),
                 toDate = react.createElement(
                     CalendarComponent,
                     {
                         pickDate: function(date) {
                             this.setState({toDate: date});
-                        }.bind(this)
+                        }.bind(this),
+                        pickedDate: this.state.toDate,
+                        disableBefore: this.state.fromDate,
                     }),
                 calendarWrapper = react.createElement(
                     'div',
