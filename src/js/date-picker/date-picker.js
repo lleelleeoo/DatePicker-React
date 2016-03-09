@@ -1,6 +1,6 @@
-var react = require('react'),
+var React = require('react'),
     CalendarComponent = require('./calendar.js'),
-    datePickerComponent = react.createClass({
+    datePickerComponent = React.createClass({
         getInitialState: function() {
             var fromDate = new Date(),
                 toDate = new Date();
@@ -12,7 +12,7 @@ var react = require('react'),
             }
         },
         render: function() {
-            var fromDate = react.createElement(
+            var fromDate = React.createElement(
                     CalendarComponent,
                     {
                         pickDate: function(date) {
@@ -23,7 +23,7 @@ var react = require('react'),
                         disableAfter: this.state.toDate,
                         key: 'from-picker',
                     }),
-                toDate = react.createElement(
+                toDate = React.createElement(
                     CalendarComponent,
                     {
                         pickDate: function(date) {
@@ -33,7 +33,7 @@ var react = require('react'),
                         disableBefore: this.state.fromDate,
                         key: 'to-picker',
                     }),
-                calendarWrapper = react.createElement(
+                calendarWrapper = React.createElement(
                     'div',
                     {
                         className: 'calendar-wrapper',
@@ -41,7 +41,7 @@ var react = require('react'),
                     },
                     [fromDate, toDate]
                 ),
-                startDuration = react.createElement(
+                startDuration = React.createElement(
                     'span',
                     {key: 'start-duration'},
                     [
@@ -50,7 +50,7 @@ var react = require('react'),
                         this.state.fromDate.getFullYear(),
                     ]
                 ),
-                endDuration = react.createElement(
+                endDuration = React.createElement(
                     'span',
                     {key: 'end-duration'},
                     [
@@ -59,7 +59,7 @@ var react = require('react'),
                         this.state.toDate.getFullYear(),
                     ]
                 ),
-                durationWrapper = react.createElement(
+                durationWrapper = React.createElement(
                     'div',
                     {
                         className: 'duration-wrapper',
@@ -68,7 +68,7 @@ var react = require('react'),
                     [startDuration, endDuration]
                 );
 
-            return react.createElement(
+            return React.createElement(
                 'div',
                 {
                     className: 'date-picker-wrapper',

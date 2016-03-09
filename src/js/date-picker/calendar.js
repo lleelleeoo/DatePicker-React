@@ -1,4 +1,4 @@
-var react = require('react');
+var React = require('react');
 
 Date.prototype.getDaysInMonth = function () {
     var here = new Date(this.getTime());
@@ -11,8 +11,7 @@ Date.prototype.getFistDay = function () {
     return here.getDay();
 };
 
-var CalendarComponent,
-    monthLabels = [
+var monthLabels = [
                 'Jan', 'Feb', 'Mar',
                 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep',
@@ -23,10 +22,12 @@ var CalendarComponent,
             labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', ];
 
         for (var day=0; day < labels.length; day++) {
-            result.push(react.createElement('td', {key: labels[day]}, labels[day]));
+            result.push(React.createElement('td', {key: labels[day]}, labels[day]));
         };
-        return react.createElement('tr', {key: result}, result);
-    })();
+        return React.createElement('tr', {key: result}, result);
+    })(),
+    CalendarComponent,
+    MonthSelectorComponent;
 
 function getWeeks (year, month, pickedDate, disableBefore, disableAfter) {
     var today = new Date(),
@@ -63,7 +64,7 @@ function getWeeks (year, month, pickedDate, disableBefore, disableAfter) {
                 && (new Date(year, month, date+1) <= disableAfter);
             className += (date && isAvailable) ? ' active' : ' disable';
             result.push(
-                react.createElement(
+                React.createElement(
                     'td',
                     {
                         className: className,
@@ -73,7 +74,7 @@ function getWeeks (year, month, pickedDate, disableBefore, disableAfter) {
                 )
             );
         };
-        return react.createElement('tr', {key: week}, result);
+        return React.createElement('tr', {key: week}, result);
     };
 
     for (var week = 0; week < weeksCount; week++) {
@@ -83,9 +84,9 @@ function getWeeks (year, month, pickedDate, disableBefore, disableAfter) {
 };
 
 
-MonthSelectorComponent = react.createClass({
+MonthSelectorComponent = React.createClass({
     render: function() {
-        var prevMonth = react.createElement(
+        var prevMonth = React.createElement(
                 'span',
                 {
                     onClick: this.props.prevMonth,
@@ -94,7 +95,7 @@ MonthSelectorComponent = react.createClass({
                 },
                 '<'
             ),
-            nextMonth = react.createElement(
+            nextMonth = React.createElement(
                 'span',
                 {
                     onClick: this.props.nextMonth,
@@ -103,7 +104,7 @@ MonthSelectorComponent = react.createClass({
                 },
                 '>'
             ),
-            prevYear = react.createElement(
+            prevYear = React.createElement(
                 'span',
                 {
                     onClick: this.props.prevYear,
@@ -112,7 +113,7 @@ MonthSelectorComponent = react.createClass({
                 },
                 '<'
             ),
-            nextYear = react.createElement(
+            nextYear = React.createElement(
                 'span',
                 {
                     onClick: this.props.nextYear,
@@ -121,21 +122,21 @@ MonthSelectorComponent = react.createClass({
                 },
                 '>'
             ),
-            month = react.createElement(
+            month = React.createElement(
                 'span', {key: 'selected-month'}, monthLabels[this.props.focusedMonth]
             ),
-            year = react.createElement(
+            year = React.createElement(
                 'span', {key: 'selected-year'}, this.props.focusedYear
             );
 
-        return react.createElement('h3', {className: 'calendar-header'},
+        return React.createElement('h3', {className: 'calendar-header'},
             [prevMonth, month, nextMonth, prevYear, year, nextYear]
         )
     },
 });
 
 
-CalendarComponent = react.createClass({
+CalendarComponent = React.createClass({
     getInitialState: function() {
         var curentDate = new Date(),
             pickedDate = this.props.pickedDate || null,
@@ -156,7 +157,7 @@ CalendarComponent = react.createClass({
     },
 
     render: function() {
-        var month = react.createElement(
+        var month = React.createElement(
                 MonthSelectorComponent,
                 {
                     focusedYear: this.state.focusedYear,
@@ -185,7 +186,7 @@ CalendarComponent = react.createClass({
                     key: 'month-' + this.state.focusedMonth,
                 }),
 
-            calendarHead = react.createElement('thead', {key: 'picker-header'}, dayElements),
+            calendarHead = React.createElement('thead', {key: 'picker-header'}, dayElements),
             calendarBody,
             calendar;
 
@@ -196,7 +197,7 @@ CalendarComponent = react.createClass({
             this.props.disableBefore,
             this.props.disableAfter
         );
-        calendarBody = react.createElement(
+        calendarBody = React.createElement(
             'tbody',
             {
                 onClick: this.selectDate,
@@ -204,12 +205,12 @@ CalendarComponent = react.createClass({
             },
             this.state.weeks
         );
-        calendar = react.createElement(
+        calendar = React.createElement(
             'table',
             {key: 'calendar-component'},
             [calendarHead, calendarBody]
         );
-        return react.createElement('div', {key: 'calendar'}, [month, calendar]);
+        return React.createElement('div', {key: 'calendar'}, [month, calendar]);
     },
 
     selectDate: function(event) {
