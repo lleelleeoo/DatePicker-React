@@ -1,5 +1,5 @@
 var React = require('react'),
-    CalendarComponent = require('./calendar.js'),
+    CalendarComponent = require('./calendar.jsx'),
     datePickerComponent = React.createClass({
         getInitialState: function() {
             var fromDate = new Date(),
