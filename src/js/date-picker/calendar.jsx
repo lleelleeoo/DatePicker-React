@@ -1,85 +1,20 @@
-require('./date-helpers.js')
+require('./date-helpers.js');
 
 var React = require('react'),
-    MonthSelectorComponent = require('./month-selector-component.js');
-
-var dayElements = (function  () {
-        var result = [],
-            labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', ];
-
-        for (var day=0; day < labels.length; day++) {
-            result.push(React.createElement('td', {key: labels[day]}, labels[day]));
-        };
-        return React.createElement('tr', {key: result}, result);
-    })(),
-    CalendarComponent,
-    MonthSelectorComponent;
-
-function getWeeks (year, month, pickedDate, disableBefore, disableAfter) {
-    var today = new Date(),
-        result = [],
-        weeksCount = 6,
-        daysInWeek = 7,
-        pickedDate = pickedDate || today,
-        pickedYear = pickedDate.getFullYear(),
-        pickedMonth = pickedDate.getMonth(),
-        pickedDay = pickedDate.getDate(),
-        disableBefore = disableBefore || today,
-        disableAfter = disableAfter || new Date(today.getFullYear()+2,
-                                                today.getMonth());
-    function getDate(day, week) {
-        var focusedDate = new Date(year, month),
-            firstDay = focusedDate.getFistDay(),
-            result = (day+1)%(daysInWeek+1) - firstDay + week*daysInWeek;
-
-        return ( result>0 & result <= focusedDate.getDaysInMonth() )
-            ? result : 0;
-    };
-
-    function generateWeek(week) {
-        var result = [],
-            date,
-            className = '';
-        for (var day=0; day<daysInWeek; day++) {
-            date = getDate(day, week);
-            className = '';
-            className += (
-                pickedDay==date & pickedMonth==month & pickedYear==year
-            ) ? 'picked' : '';
-            var isAvailable = (new Date(year, month, date+1) >= disableBefore)
-                && (new Date(year, month, date+1) <= disableAfter);
-            className += (date && isAvailable) ? ' active' : ' disable';
-            result.push(
-                React.createElement(
-                    'td',
-                    {
-                        className: className,
-                        key: '' + week + day,
-                    },
-                    date || ''
-                )
-            );
-        };
-        return React.createElement('tr', {key: week}, result);
-    };
-
-    for (var week = 0; week < weeksCount; week++) {
-        result.push(generateWeek(week));
-    };
-    return result;
-};
+    MonthSelectorComponent = require('./month-selector-component.jsx'),
+    CalendarComponent;
 
 CalendarComponent = React.createClass({
     getInitialState: function() {
-        var curentDate = new Date(),
+        var today = new Date(),
             pickedDate = this.props.pickedDate || null,
-            focusedMonth = curentDate.getMonth(),
-            focusedYear = curentDate.getFullYear(),
-            weeks = getWeeks(focusedYear, focusedMonth, null, this.props.disableBefore, this.props.disableAfter),
+            focusedMonth = today.getMonth(),
+            focusedYear = today.getFullYear(),
+            weeks,
             state;
 
         state = {
-            curentDate: curentDate,
+            today: today,
             pickedDate: pickedDate,
             focusedMonth: focusedMonth,
             focusedYear: focusedYear,
@@ -90,60 +25,53 @@ CalendarComponent = React.createClass({
     },
 
     render: function() {
-        var month = React.createElement(
-                MonthSelectorComponent,
-                {
-                    focusedYear: this.state.focusedYear,
-                    focusedMonth: this.state.focusedMonth,
-                    nextMonth: function(){
-                            this.setState({
-                                focusedMonth: (this.state.focusedMonth+1)%12
-                            });
-                        }.bind(this),
-                    prevMonth: function(){
-                            this.setState({
-                                focusedMonth: this.state.focusedMonth-1 < 0
-                                    ? 11 : this.state.focusedMonth-1
-                            });
-                        }.bind(this),
-                    nextYear: function(){
-                            this.setState({
-                                focusedYear: this.state.focusedYear+1
-                            });
-                        }.bind(this),
-                    prevYear: function(){
-                            this.setState({
-                                focusedYear: this.state.focusedYear-1
-                            });
-                        }.bind(this),
-                    key: 'month-' + this.state.focusedMonth,
-                }),
+        console.dir(this.props);
+        this.state.weeks = this.getWeeks();
 
-            calendarHead = React.createElement('thead', {key: 'picker-header'}, dayElements),
-            calendarBody,
-            calendar;
-
-        this.state.weeks = getWeeks(
-            this.state.focusedYear,
-            this.state.focusedMonth,
-            this.state.pickedDate,
-            this.props.disableBefore,
-            this.props.disableAfter
+        return (
+            <div>
+                <MonthSelectorComponent
+                    focusedYear = { this.state.focusedYear }
+                    focusedMonth = { this.state.focusedMonth }
+                    nextMonth = {function(){
+                                                this.setState({
+                                                    focusedMonth: (this.state.focusedMonth+1)%12
+                                                });
+                                            }.bind(this)}
+                    prevMonth = {function(){
+                                                this.setState({
+                                                    focusedMonth: this.state.focusedMonth-1 < 0 ? 11 : this.state.focusedMonth-1
+                                                });
+                                            }.bind(this)}
+                    nextYear = {(function(){
+                                                                    this.setState({
+                                                                        focusedYear: this.state.focusedYear+1
+                                                                    });
+                                                                }.bind(this))}
+                    prevYear = {function(){
+                                                this.setState({
+                                                    focusedYear: this.state.focusedYear-1
+                                                });
+                                            }.bind(this)}
+                />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sun</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody onClick = { this.selectDate }>
+                        { this.state.weeks }
+                    </tbody>
+                </table>
+            </div>
         );
-        calendarBody = React.createElement(
-            'tbody',
-            {
-                onClick: this.selectDate,
-                key: 'picker-body',
-            },
-            this.state.weeks
-        );
-        calendar = React.createElement(
-            'table',
-            {key: 'calendar-component'},
-            [calendarHead, calendarBody]
-        );
-        return React.createElement('div', {key: 'calendar'}, [month, calendar]);
     },
 
     selectDate: function(event) {
@@ -152,13 +80,66 @@ CalendarComponent = React.createClass({
                     this.state.focusedYear,
                     this.state.focusedMonth,
                     event.target.innerHTML
-                )
+                );
             this.setState({
                 pickedDate: pickedDate
             });
 
-            this.props.pickDate(pickedDate)
+            this.props.pickDate(pickedDate);
         }
+    },
+
+    getWeeks: function  () {
+        var today = new Date(),
+            result = [],
+            weeksCount = 6,
+            daysInWeek = 7,
+            pickedDate = this.props.pickedDate || today,
+            pickedYear = pickedDate.getFullYear(),
+            pickedMonth = pickedDate.getMonth(),
+            pickedDay = pickedDate.getDate(),
+            disableBefore = disableBefore || today,
+            disableAfter = disableAfter || new Date(today.getFullYear()+2,
+                                                    today.getMonth());
+
+        function generateWeek(week) {
+            var result = [],
+                date,
+                className = '';
+
+            function getDate(day, week) {
+                var focusedDate = new Date(this.state.focusedYear, this.state.focusedMonth),
+                    firstDay = focusedDate.getFistDay(),
+                    result = (day+1)%(daysInWeek+1) - firstDay + week*daysInWeek;
+
+                return ( result>0 & result <= focusedDate.getDaysInMonth() ) ? result : 0;
+            }
+
+            for (var day=0; day<daysInWeek; day++) {
+                date = getDate.call(this, day, week);
+                className = '';
+                className += (
+                    pickedDay==date & pickedMonth==this.state.focusedMonth & pickedYear==this.state.focusedYear
+                ) ? 'picked' : '';
+                var isAvailable = (new Date(this.state.focusedYear, this.state.focusedMonth, date+1) >= disableBefore) &&
+                    (new Date(this.state.focusedYear, this.state.focusedMonth, date+1) <= disableAfter);
+
+                className += (date && isAvailable) ? ' active' : ' disable';
+                result.push(
+                    <td className = { className }>
+                        { date || '' }
+                    </td>
+                );
+            }
+
+            return <tr>{ result }</tr>;
+        }
+
+        for (var week = 0; week < weeksCount; week++) {
+            result.push(generateWeek.call(this, week));
+        }
+
+        return result;
     },
 });
 
