@@ -1,7 +1,7 @@
 var React = require('react'),
     reactDOM = require('react-dom'),
 
-    DatePicker = require('./date-picker/date-picker.js');
+    DatePicker = require('./date-picker/date-picker.jsx');
 
 require('../css/style.css');
 

@@ -215,7 +215,7 @@ CalendarComponent = React.createClass({
 
     selectDate: function(event) {
         if (event.target.classList.contains('active')) {
-            pickedDate = new Date(
+            var pickedDate = new Date(
                     this.state.focusedYear,
                     this.state.focusedMonth,
                     event.target.innerHTML
