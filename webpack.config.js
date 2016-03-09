@@ -1,4 +1,4 @@
-var browuserSync = require('browser-sync-webpack-plugin');
+var browserSync = require('browser-sync-webpack-plugin');
 
 module.exports = {
     entry: "./src/js/entry.js",
@@ -12,7 +12,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new browuserSync({
+        new browserSync({
             host: 'localhost',
             port: '3000',
             server: {baseDir: ['./src/']}
