@@ -30,7 +30,13 @@ var React = require('react'),
                                         }.bind(this)
                             }
                             pickedDate = { this.state.toDate }
-                            disableBefore = { this.state.fromDate }
+                            disableBefore = {
+                                new Date(
+                                    this.state.fromDate.getFullYear(),
+                                    this.state.fromDate.getMonth(),
+                                    this.state.fromDate.getDate() + 2
+                                )
+                            }
                         />
                     </div>
                     <div className="duration-wrapper">

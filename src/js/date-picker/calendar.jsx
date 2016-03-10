@@ -24,8 +24,15 @@ CalendarComponent = React.createClass({
         return state;
     },
 
+    selectMonth: function(month) {
+        this.setState({focusedMonth: month});
+    },
+
+    selectYear: function(year) {
+        this.setState({focusedYear: year});
+    },
+
     render: function() {
-        console.dir(this.props);
         this.state.weeks = this.getWeeks();
 
         return (
@@ -33,26 +40,10 @@ CalendarComponent = React.createClass({
                 <MonthSelectorComponent
                     focusedYear = { this.state.focusedYear }
                     focusedMonth = { this.state.focusedMonth }
-                    nextMonth = {function(){
-                                                this.setState({
-                                                    focusedMonth: (this.state.focusedMonth+1)%12
-                                                });
-                                            }.bind(this)}
-                    prevMonth = {function(){
-                                                this.setState({
-                                                    focusedMonth: this.state.focusedMonth-1 < 0 ? 11 : this.state.focusedMonth-1
-                                                });
-                                            }.bind(this)}
-                    nextYear = {(function(){
-                                                                    this.setState({
-                                                                        focusedYear: this.state.focusedYear+1
-                                                                    });
-                                                                }.bind(this))}
-                    prevYear = {function(){
-                                                this.setState({
-                                                    focusedYear: this.state.focusedYear-1
-                                                });
-                                            }.bind(this)}
+                    prevMonth = { this.selectMonth.bind(this, this.state.focusedMonth-1) }
+                    nextMonth = { this.selectMonth.bind(this, this.state.focusedMonth+1) }
+                    prevYear = { this.selectYear.bind(this, this.state.focusedYear-1) }
+                    nextYear = { this.selectYear.bind(this, this.state.focusedYear+1) }
                 />
                 <table>
                     <thead>
@@ -98,9 +89,8 @@ CalendarComponent = React.createClass({
             pickedYear = pickedDate.getFullYear(),
             pickedMonth = pickedDate.getMonth(),
             pickedDay = pickedDate.getDate(),
-            disableBefore = disableBefore || today,
-            disableAfter = disableAfter || new Date(today.getFullYear()+2,
-                                                    today.getMonth());
+            disableBefore = this.props.disableBefore || today,
+            disableAfter = this.props.disableAfter || new Date(today.getFullYear()+2, today.getMonth());
 
         function generateWeek(week) {
             var result = [],
